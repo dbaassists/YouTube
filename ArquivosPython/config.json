@@ -1,0 +1,9 @@
+{
+	"Config":
+	{
+	"server": "localhost\\DBAASSISTS",
+	"database": "PYTHON",
+	"username": "python",
+	"password": "python"
+	}
+}
