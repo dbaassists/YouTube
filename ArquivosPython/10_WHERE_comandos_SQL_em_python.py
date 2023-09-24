@@ -17,7 +17,7 @@ pd.options.display.float_format = "{:.2f}".format
 
 arquivo_video_origem = 'C:\Temp\Python_YT\Arquivo_Exemplo\Videos\\USvideos.csv'
 arquivo_video_destino = 'C:\Temp\Python_YT\Arquivo_Exemplo\Videos\\videos_youtube.csv'
-arquivo_parametro_json = "c:\Temp\Config\config.json"
+arquivo_parametro_json = "c:\Temp\Config\config_azure.json"
 
 importa_arquivo_videos_youtube(arquivo_video_origem
               , arquivo_video_destino

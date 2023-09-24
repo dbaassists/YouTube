@@ -41,7 +41,7 @@ def importa_arquivo_videos_youtube(arquivo_video_origem, arquivo_video_destino, 
                     ,dtype={'CodVideoYouTube':'str'
                             ,'NomVideo':'str'
                             ,'NomCanal':'str'
-                            ,'CodCategoriaVideo':'int32'
+                            ,'CodCategoriaVideo':'int16'
                             ,'NumVisualizacao':'int32'
                             ,'NumLike':'int64'
                             ,'NumDislike':'int32'
@@ -74,19 +74,21 @@ def importa_arquivo_videos_youtube(arquivo_video_origem, arquivo_video_destino, 
     cursor 	= cnxn.cursor()
 
     cursor.execute('''
-            IF EXISTS (SELECT 1 FROM SYS.TABLES WHERE NAME = 'TB_VIDEOS_YOUTUBE')
-            DROP TABLE dbo.TB_VIDEOS_YOUTUBE;            
+            DROP TABLE IF EXISTS dbo.TB_VIDEOS_YOUTUBE
             CREATE TABLE dbo.TB_VIDEOS_YOUTUBE(
             IdSeqVideoYouTube int not null identity(1,1)       
             ,CodVideoYouTube varchar(200)
             ,NomVideo varchar(2000)
             ,NomCanal  varchar(2000)
-            ,CodCategoriaVideo  bigint
+            ,CodCategoriaVideo  int
             ,NumVisualizacao bigint
             ,NumLike bigint
             ,NumDislike bigint
             ,NumComentario bigint
             )
+            ALTER TABLE [dbo].[TB_VIDEOS_YOUTUBE]
+            ADD CONSTRAINT [PK_VIDEOS_YOUTUBE]
+            PRIMARY KEY ([IdSeqVideoYouTube])
             ''')
 
     query = 'INSERT INTO dbo.TB_VIDEOS_YOUTUBE({0}) VALUES ({1})'
@@ -154,13 +156,14 @@ def importa_arquivo_categoria_videos_youtube(arquivo_categoria_origem, arquivo_c
     cursor 	= cnxn.cursor()
 
     cursor.execute('''
-            IF EXISTS (SELECT 1 FROM SYS.TABLES WHERE NAME = 'TB_CATEGORIA_VIDEOS_YOUTUBE')
-            DROP TABLE dbo.TB_CATEGORIA_VIDEOS_YOUTUBE;            
+            DROP TABLE IF EXISTS dbo.TB_CATEGORIA_VIDEOS_YOUTUBE
             CREATE TABLE dbo.TB_CATEGORIA_VIDEOS_YOUTUBE(
-            IdSeqCategoriaVideoYouTube int not null identity(1,1)       
-            ,CodCategoriaVideo  int not null
+            CodCategoriaVideo  int not null
             ,NomCategoriaVideo  varchar(2000)  not null
             )
+            ALTER TABLE [dbo].[TB_CATEGORIA_VIDEOS_YOUTUBE] 
+            ADD CONSTRAINT [PK_CATEGORIA]
+            PRIMARY KEY ([CodCategoriaVideo])
             ''')
 
     query = 'INSERT INTO dbo.TB_CATEGORIA_VIDEOS_YOUTUBE({0}) VALUES ({1})'
@@ -170,6 +173,13 @@ def importa_arquivo_categoria_videos_youtube(arquivo_categoria_origem, arquivo_c
     cursor.fast_executemany = True    
 
     cursor.executemany(query, dfCategoria.values.tolist())
+
+    cursor.execute('''
+            ALTER TABLE [dbo].[TB_VIDEOS_YOUTUBE]
+            ADD CONSTRAINT [FK_CATEGORIA_VIDEOS]
+            FOREIGN KEY ([CodCategoriaVideo])
+            REFERENCES [dbo].[TB_CATEGORIA_VIDEOS_YOUTUBE] ([CodCategoriaVideo])
+            ''')
 
     cnxn.commit()
 # %%
@@ -183,3 +193,5 @@ def importa_arquivo_categoria_videos_youtube(arquivo_categoria_origem, arquivo_c
 #importa_arquivo_videos_youtube(arquivo_video_origem, arquivo_video_destino, arquivo_parametro_json)
 
 #importa_arquivo_categoria_videos_youtube(arquivo_categoria_origem, arquivo_categoria_destino, arquivo_parametro_json)
+
+# %%
