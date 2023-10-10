@@ -25,7 +25,7 @@ importa_arquivo_videos_youtube(arquivo_video_origem
 
 # %%
 
-## 01 - CRIANDO O DATAFRAME
+##  01 - CRIANDO O DATAFRAME
 
 dfVideoYouTube = pd.read_csv(arquivo_video_destino
                  ,sep=';'
